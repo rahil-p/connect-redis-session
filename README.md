@@ -3,6 +3,7 @@
 This module provides Redis session storage for Express for the [`node-redis`][node-redis] v4 client.
 
 [![npm](https://img.shields.io/npm/v/red-store?logo=npm)](https://www.npmjs.com/package/red-store)
+[![github-workflow](https://img.shields.io/github/workflow/status/rahil-p/red-store/npm-publish?logo=github)](https://github.com/rahil-p/red-store/actions)
 
 
 ### Features:
@@ -15,8 +16,8 @@ This module provides Redis session storage for Express for the [`node-redis`][no
 ### Compatibility:
 
 - Redis server: 2.6.0+
-- Redis client: [`node-redis`][node-redis] 4.0.2+
-- Express session: 1.7.0+
+- [`node-redis`][node-redis] 4.0.2+
+- [`express-session`][express-session]: 1.7.0+
 
 ___
 
@@ -53,9 +54,11 @@ app.use(
 )
 ```
 
-Disabling `saveUninitialized` helps reduce traffic and memory usage for your Redis store.
+Disabling the session's [`saveUninitialized`](https://github.com/expressjs/session#saveuninitialized) 
+option helps reduce traffic and memory usage for your Redis store.
 
-Disabling `resave` helps prevent concurrent requests from overwriting sessions.
+Disabling the session's [`resave`](https://github.com/expressjs/session#resave)
+option helps prevent concurrent requests from overwriting sessions.
 
 ### Direct Access
 
@@ -98,20 +101,22 @@ using the key batches (e.g. `MGET`, `DEL`).
 
 **number** | default: `86400` (1 day)
 
-This field is only used when a session cookie is missing the `expires` field.
+This field is only used when a session cookie is missing the 
+[`expires`](https://github.com/expressjs/session#cookieexpires) field.
 
 It represents the fallback duration in seconds after which a created or updated session should be expired when the 
-cookie `expires` date is missing.
-
+cookie [`expires`](https://github.com/expressjs/session#cookieexpires) date is missing.
 
 ### disableTouch
 
 **boolean** | default: `false`
 
-Disables renewing the session's time to live when the `touch` method is used.
+Disables renewing the session's time to live when the session's [`touch`](https://github.com/expressjs/session#sessiontouch) 
+method is used.
 
-Setting this option to `true` is not recommended; this toggle should be mutually exclusive with the `session.resave` 
-option, which should be set to false.
+Setting this option to `true` is not recommended and should share the same value as the session's
+[`resave`](https://github.com/expressjs/session#saveuninitialized) 
+option.
 
 ### concurrencyMerge
 
@@ -124,3 +129,4 @@ handled by overriding with the latest session data saved.
 [MIT License](https://github.com/rahil-p/passport-discord-token/blob/master/LICENSE)
 
 [node-redis]: https://github.com/redis/node-redis
+[express-session]: https://github.com/expressjs/session
