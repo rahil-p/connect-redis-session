@@ -3,7 +3,7 @@
 This module provides Redis session storage for Express for the [`node-redis`][node-redis] v4 client.
 
 [![npm](https://img.shields.io/npm/v/red-store?logo=npm)](https://www.npmjs.com/package/red-store)
-[![github-workflow](https://img.shields.io/github/workflow/status/rahil-p/red-store/npm-publish?logo=github)](https://github.com/rahil-p/red-store/actions)
+[![github-workflow](https://img.shields.io/github/workflow/status/rahil-p/red-store/npm%20publish?logo=github)](https://github.com/rahil-p/red-store/actions)
 
 
 ### Features:
