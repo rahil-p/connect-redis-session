@@ -1,0 +1,23 @@
+{
+	"include": ["src/**/*.ts"],
+	"compilerOptions": {
+		"rootDir": "src",
+		"outDir": "build",
+		"target": "es6",
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"declaration": true,
+		"sourceMap": true,
+		"removeComments": true,
+		"strict": true,
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"noImplicitThis": true,
+		"alwaysStrict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true
+	}
+}

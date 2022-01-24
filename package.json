@@ -1,0 +1,60 @@
+{
+	"name": "red-store",
+	"version": "0.1.0",
+	"description": "Redis session store for Express",
+	"keywords": [
+		"redis",
+		"express",
+		"session",
+		"store"
+	],
+	"homepage": "https://github.com/rahil-p/red-store#readme",
+	"bugs": {
+		"url": "https://github.com/rahil-p/red-store/issues"
+	},
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/rahil-p/red-store.git"
+	},
+	"author": {
+		"name": "Rahil Patel",
+		"url": "https://github.com/rahil-p"
+	},
+	"files": [
+		"build"
+	],
+	"main": "build/index.js",
+	"scripts": {
+		"build": "tsc --project .",
+		"lint": "eslint --fix .",
+		"test": "nyc --reporter=lcov mocha --timeout=10000"
+	},
+	"devDependencies": {
+		"@types/express-session": "^1.17.0",
+		"@typescript-eslint/eslint-plugin": "^5.10.1",
+		"@typescript-eslint/parser": "^5.10.1",
+		"chai": "^4.3.4",
+		"codecov": "^3.8.2",
+		"eslint": "^8.7.0",
+		"eslint-config-airbnb-base": "^15.0.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-eslint-comments": "^3.2.0",
+		"eslint-plugin-import": "^2.25.4",
+		"eslint-plugin-mocha": "^10.0.3",
+		"eslint-plugin-prettier": "^4.0.0",
+		"mocha": "^9.2.0",
+		"nyc": "^15.1.0",
+		"prettier": "^2.5.1",
+		"redis": "^4.0.2",
+		"testcontainers": "^8.2.0",
+		"typescript": "^4.5.5"
+	},
+	"peerDependencies": {
+		"express-session": "^1.17.0",
+		"redis": "^4.0.2"
+	},
+	"engines": {
+		"node": ">=12.0.0"
+	}
+}
