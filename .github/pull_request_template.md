@@ -2,7 +2,7 @@
 
 ## Checklist
 
-- [ ] Increment the package version in [`/package.json`](https://github.com/rahil-p/red-store/tree/master/package.json)
+- [ ] Increment the package version in [`/package.json`](https://github.com/rahil-p/connect-redis-session/tree/master/package.json)
 
 - [ ] Describe the changes in the pull request under [***Description***](#description)
 
@@ -10,7 +10,7 @@
 
 ## Resolutions
 
-### [GitHub Issues](https://github.com/rahil-p/red-store/issues)
+### [GitHub Issues](https://github.com/rahil-p/connect-redis-session/issues)
 
 - resolves #:see_no_evil:
 

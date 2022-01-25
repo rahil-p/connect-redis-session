@@ -1,9 +1,9 @@
-# red-store
+# connect-redis-session
 
 This module provides Redis session storage for Express for the [`node-redis`][node-redis] v4 client.
 
-[![npm](https://img.shields.io/npm/v/red-store?logo=npm)](https://www.npmjs.com/package/red-store)
-[![github-workflow](https://img.shields.io/github/workflow/status/rahil-p/red-store/npm%20publish?logo=github)](https://github.com/rahil-p/red-store/actions)
+[![npm](https://img.shields.io/npm/v/connect-redis-session?logo=npm)](https://www.npmjs.com/package/connect-redis-session)
+[![github-workflow](https://img.shields.io/github/workflow/status/rahil-p/connect-redis-session/npm%20publish?logo=github)](https://github.com/rahil-p/connect-redis-session/actions)
 
 
 ### Features:
@@ -23,10 +23,10 @@ ___
 
 ## Installation
 ```shell
-npm install red-store
+npm install connect-redis-session
 ```
 ```shell
-yarn add red-store
+yarn add connect-redis-session
 ```
 
 ## Usage
@@ -34,7 +34,7 @@ yarn add red-store
 ### Quick Start
 ```js
 const redis = require('redis');
-const { RedisStore } = require('red-store')
+const { RedisStore } = require('connect-redis-session')
 
 const store = new RedisStore({
     client: redis.createClient()
@@ -126,7 +126,7 @@ Determines whether session race conditions should be resolved by deep merging ch
 handled by overriding with the latest session data saved.
 
 ## License
-[MIT License](https://github.com/rahil-p/red-store/blob/master/LICENSE)
+[MIT License](https://github.com/rahil-p/connect-redis-session/blob/master/LICENSE)
 
 [node-redis]: https://github.com/redis/node-redis
 [express-session]: https://github.com/expressjs/session

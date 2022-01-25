@@ -1,5 +1,5 @@
 {
-	"name": "red-store",
+	"name": "connect-redis-session",
 	"version": "0.1.0",
 	"description": "Redis session store for Express",
 	"keywords": [
@@ -8,14 +8,14 @@
 		"session",
 		"store"
 	],
-	"homepage": "https://github.com/rahil-p/red-store#readme",
+	"homepage": "https://github.com/rahil-p/connect-redis-session#readme",
 	"bugs": {
-		"url": "https://github.com/rahil-p/red-store/issues"
+		"url": "https://github.com/rahil-p/connect-redis-session/issues"
 	},
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/rahil-p/red-store.git"
+		"url": "https://github.com/rahil-p/connect-redis-session.git"
 	},
 	"author": {
 		"name": "Rahil Patel",
