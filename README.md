@@ -126,7 +126,7 @@ Determines whether session race conditions should be resolved by deep merging ch
 handled by overriding with the latest session data saved.
 
 ## License
-[MIT License](https://github.com/rahil-p/passport-discord-token/blob/master/LICENSE)
+[MIT License](https://github.com/rahil-p/red-store/blob/master/LICENSE)
 
 [node-redis]: https://github.com/redis/node-redis
 [express-session]: https://github.com/expressjs/session

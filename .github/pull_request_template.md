@@ -2,7 +2,7 @@
 
 ## Checklist
 
-- [ ] Increment the package version in [`/package.json`](https://github.com/rahil-p/passport-discord-token/tree/master/package.json)
+- [ ] Increment the package version in [`/package.json`](https://github.com/rahil-p/red-store/tree/master/package.json)
 
 - [ ] Describe the changes in the pull request under [***Description***](#description)
 
@@ -10,7 +10,7 @@
 
 ## Resolutions
 
-### [GitHub Issues](https://github.com/rahil-p/passport-discord-token/issues)
+### [GitHub Issues](https://github.com/rahil-p/red-store/issues)
 
 - resolves #:see_no_evil:
 
