@@ -25,7 +25,7 @@ describe('RedisStore', function () {
 
 	before(async function () {
 		container = await new GenericContainer('redis').withExposedPorts(6379).start();
-		redisClient = redis.createClient();
+		redisClient = redis.createClient({ url: `redis://${container.getHost()}:${container.getMappedPort(6379)}` });
 		await redisClient.connect();
 	});
 
