@@ -3,7 +3,7 @@
 Redis session storage for Express and the latest [`node-redis`][node-redis] client.
 
 [![npm](https://img.shields.io/npm/v/connect-redis-session?logo=npm)](https://www.npmjs.com/package/connect-redis-session)
-[![codecov](https://codecov.io/gh/rahil-p/connect-redis-session/branch/master/graph/badge.svg?token=LSOQ2ZCWIS)](https://codecov.io/gh/rahil-p/connect-redis-session)
+[![codecov](https://codecov.io/gh/rahil-p/connect-redis-session/branch/main/graph/badge.svg?token=P0nIvyEnTS)](https://codecov.io/gh/rahil-p/connect-redis-session)
 [![github-workflow](https://img.shields.io/github/workflow/status/rahil-p/connect-redis-session/npm%20publish?logo=github)](https://github.com/rahil-p/connect-redis-session/actions)
 
 ### Features:
@@ -29,6 +29,8 @@ npm install connect-redis-session
 ```shell
 yarn add connect-redis-session 
 ```
+
+
 
 ## Usage
 

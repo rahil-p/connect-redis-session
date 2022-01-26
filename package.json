@@ -51,7 +51,7 @@
 		"mocha": "^9.2.0",
 		"nyc": "^15.1.0",
 		"prettier": "^2.5.1",
-		"redis": "^4.0.2",
+		"redis": "^4.0.0",
 		"sinon": "^12.0.1",
 		"source-map-support": "^0.5.21",
 		"testcontainers": "^8.2.0",
@@ -60,7 +60,7 @@
 	},
 	"peerDependencies": {
 		"express-session": "^1.17.0",
-		"redis": "^4.0.2"
+		"redis": "^4.0.0"
 	},
 	"engines": {
 		"node": ">=12.0.0"
