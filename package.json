@@ -16,8 +16,9 @@
 		"url": "https://github.com/rahil-p/connect-redis-session/issues"
 	},
 	"files": [
-		"build/lib",
-		"build/lua"
+		"build/lib/**/*.js",
+		"build/lib/**/*.d.ts",
+		"build/lua/**/*.lua"
 	],
 	"main": "build/index.js",
 	"scripts": {
