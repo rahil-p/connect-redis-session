@@ -98,7 +98,11 @@ const store = new RedisStore({
 })
 ```
 
+___
+
 ### `client`
+
+object | **required**
 
 An initialized [`node-redis`][node-redis] v4 client.
 
@@ -117,58 +121,72 @@ Prior to server listening, the client's `connect` method should be called.
 
 </details>
 
+___
+
 ### `prefix`
 
-**string** • `'sessions:'`
+string • `'sessions:'`
 
 A prefix used for each key in the session store.
 
+___
+
 ### `scanCount`
 
-**number** • `100`
+number • `100`
 
-The maximum number of keys batched in Redis `SCAN` calls.  This also helps limit the memory load on subsequent calls 
+The maximum number of keys batched in Redis `SCAN` calls.  This also helps limit the memory load on subsequent calls
 using the key batches (e.g. `MGET`, `DEL`).
+
+___
 
 ### `ttlSeconds`
 
-**number | `false`** • `86400` _1 day_
+number | `false` • `86400` _1 day_
 
 The fallback duration in
 seconds after which a created or updated session should be expired.
 
-This field is only used when a session is missing the 
-[`cookie.expires`](https://github.com/expressjs/session#cookieexpires) field. 
-
-When set to `0` or `false`, the store will reject sessions missing the 
+This field is only used when a session is missing the
 [`cookie.expires`](https://github.com/expressjs/session#cookieexpires) field.
+
+When set to `0` or `false`, the store will reject sessions missing the
+[`cookie.expires`](https://github.com/expressjs/session#cookieexpires) field.
+
+___
 
 ### `concurrencyGraceSeconds`
 
-The duration in seconds after [tombstone](https://en.wikipedia.org/wiki/Tombstone_(data_store)) records are removed from 
+number | `300`
+
+The duration in seconds after [tombstone](https://en.wikipedia.org/wiki/Tombstone_(data_store)) records are removed from
 the store.
 
-**number**
+___
 
 ### `serializer`
 
-**Serializer** • [`JSON`][mdn-json]
+object • [`JSON`][mdn-json]
 
-A custom serializer implementing an encoding `stringify: (value: SessionData) => string` and a decoding 
+A custom serializer implementing an encoding `stringify: (value: SessionData) => string` and a decoding
 `parse: (text: string) => SessionData` method for storing session data as Redis string values.
 
 Refer to the global [`JSON`][mdn-json] object for an example.
 
+___
+
 ### `disableTouch`
 
-**boolean** • `false`
+boolean • `false`
 
-Disables renewing the session's time to live when the session's [`touch`](https://github.com/expressjs/session#sessiontouch) 
+Disables renewing the session's time to live when the session's [`touch`](https://github.com/expressjs/session#sessiontouch)
 method is used.
 
 Setting this option to `true` is not recommended and should share the same value as the session's
-[`resave`](https://github.com/expressjs/session#saveuninitialized) 
+[`resave`](https://github.com/expressjs/session#saveuninitialized)
 option.
+
+___
 
 ## License
 [MIT License](https://github.com/rahil-p/connect-redis-session/blob/master/LICENSE)
