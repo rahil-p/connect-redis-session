@@ -1,37 +1,40 @@
 {
 	"name": "connect-redis-session",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Redis session store for Express",
-	"keywords": [
-		"redis",
-		"express",
-		"session",
-		"store"
-	],
-	"homepage": "https://github.com/rahil-p/connect-redis-session#readme",
-	"bugs": {
-		"url": "https://github.com/rahil-p/connect-redis-session/issues"
-	},
 	"license": "MIT",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/rahil-p/connect-redis-session.git"
-	},
 	"author": {
 		"name": "Rahil Patel",
 		"url": "https://github.com/rahil-p"
 	},
+	"homepage": "https://github.com/rahil-p/connect-redis-session#readme",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/rahil-p/connect-redis-session.git"
+	},
+	"bugs": {
+		"url": "https://github.com/rahil-p/connect-redis-session/issues"
+	},
 	"files": [
-		"build"
+		"build/lib",
+		"build/lua"
 	],
 	"main": "build/index.js",
 	"scripts": {
-		"build": "tsc --project .",
+		"build": "npm run-script build:lua && npm run-script build:ts",
+		"build:lua": "mkdir -p build/lua && find lua -type f -maxdepth 1 -name '*.lua' -exec bash -c \"luamin -f {} > build/{}\" \\;",
+		"build:ts": "tsc --project .",
 		"lint": "eslint --fix .",
-		"test": "nyc --reporter=lcov mocha --timeout=10000"
+		"test": "rm -rf build && npm run-script build && npm run-script test:report",
+		"test:report": "nyc npm run-script test:test",
+		"test:test": "ts-mocha test/**/*.spec.ts"
 	},
 	"devDependencies": {
+		"@istanbuljs/nyc-config-typescript": "^1.0.2",
+		"@types/chai": "^4.3.0",
 		"@types/express-session": "^1.17.0",
+		"@types/mocha": "^9.1.0",
+		"@types/sinon": "^10.0.8",
 		"@typescript-eslint/eslint-plugin": "^5.10.1",
 		"@typescript-eslint/parser": "^5.10.1",
 		"chai": "^4.3.4",
@@ -44,11 +47,15 @@
 		"eslint-plugin-mocha": "^10.0.3",
 		"eslint-plugin-prettier": "^4.0.0",
 		"express-session": "^1.17.0",
+		"luamin": "^1.0.4",
 		"mocha": "^9.2.0",
 		"nyc": "^15.1.0",
 		"prettier": "^2.5.1",
 		"redis": "^4.0.2",
+		"sinon": "^12.0.1",
+		"source-map-support": "^0.5.21",
 		"testcontainers": "^8.2.0",
+		"ts-mocha": "^9.0.2",
 		"typescript": "^4.5.5"
 	},
 	"peerDependencies": {
@@ -57,5 +64,125 @@
 	},
 	"engines": {
 		"node": ">=12.0.0"
+	},
+	"keywords": [
+		"redis",
+		"express",
+		"session",
+		"store"
+	],
+	"nyc": {
+		"extends": "@istanbuljs/nyc-config-typescript",
+		"reporter": [
+			"lcovonly",
+			"html",
+			"text",
+			"text-summary"
+		],
+		"all": true,
+		"cache": false,
+		"instrument": true,
+		"sourceMap": true,
+		"check-coverage": true
+	},
+	"eslintConfig": {
+		"env": {
+			"es6": true,
+			"node": true
+		},
+		"ignorePatterns": [
+			"build/**/*"
+		],
+		"extends": [
+			"eslint:recommended",
+			"airbnb-base",
+			"plugin:prettier/recommended",
+			"plugin:eslint-comments/recommended",
+			"plugin:mocha/recommended",
+			"plugin:import/typescript",
+			"plugin:@typescript-eslint/eslint-recommended",
+			"plugin:@typescript-eslint/recommended",
+			"plugin:@typescript-eslint/recommended-requiring-type-checking"
+		],
+		"parser": "@typescript-eslint/parser",
+		"parserOptions": {
+			"project": "./tsconfig.json"
+		},
+		"plugins": [
+			"mocha",
+			"@typescript-eslint"
+		],
+		"rules": {
+			"@typescript-eslint/member-ordering": 1,
+			"@typescript-eslint/no-empty-function": 0,
+			"@typescript-eslint/no-use-before-define": 1,
+			"@typescript-eslint/prefer-nullish-coalescing": 1,
+			"@typescript-eslint/prefer-optional-chain": 1,
+			"@typescript-eslint/quotes": [
+				1,
+				"single",
+				{
+					"avoidEscape": true
+				}
+			],
+			"arrow-body-style": 0,
+			"import/extensions": [
+				1,
+				"ignorePackages",
+				{
+					"js": "never",
+					"ts": "never"
+				}
+			],
+			"import/no-extraneous-dependencies": [
+				1,
+				{
+					"devDependencies": [
+						"**/*.spec.ts"
+					]
+				}
+			],
+			"import/prefer-default-export": 0,
+			"lines-between-class-members": [
+				1,
+				"always",
+				{
+					"exceptAfterSingleLine": true
+				}
+			],
+			"mocha/no-sibling-hooks": 0,
+			"no-shadow": 0,
+			"no-underscore-dangle": 0,
+			"no-use-before-define": 0,
+			"no-useless-constructor": 0,
+			"prefer-arrow-callback": 0,
+			"prettier/prettier": [
+				1,
+				{
+					"arrowParens": "avoid",
+					"printWidth": 120,
+					"singleQuote": true,
+					"trailingComma": "all"
+				}
+			]
+		},
+		"settings": {
+			"import/resolver": {
+				"node": {
+					"paths": [
+						"src",
+						"test"
+					],
+					"extensions": [
+						".ts"
+					]
+				}
+			},
+			"import/parsers": {
+				"@typescript-eslint/parser": [
+					".ts"
+				]
+			}
+		}
 	}
 }

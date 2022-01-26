@@ -1,5 +1,5 @@
 local value = redis.call('GET', KEYS[1])
-if value == 'TOMBSTONE' or value == nil then
+if value == 'TOMBSTONE' then
 	return nil
 end
 

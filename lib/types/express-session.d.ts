@@ -3,7 +3,7 @@ declare module 'express-session' {
 		/**
 		 * The Unix timestamp in milliseconds when the session was last updated.
 		 */
-		lastModified: number;
+		lastModified?: number;
 	}
 }
 

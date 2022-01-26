@@ -1,11 +1,14 @@
 {
-	"include": ["src/**/*.ts"],
+	"include": [
+		"lib/**/*.ts",
+		"test/**/*.ts"
+	],
 	"compilerOptions": {
-		"rootDir": "src",
 		"outDir": "build",
 		"target": "es6",
 		"module": "commonjs",
 		"moduleResolution": "node",
+		"esModuleInterop": true,
 		"declaration": true,
 		"sourceMap": true,
 		"removeComments": true,

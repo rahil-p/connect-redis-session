@@ -1,23 +1,23 @@
 # connect-redis-session
 
-This module provides Redis session storage for Express for the [`node-redis`][node-redis] v4 client.
+Redis session storage for Express and the latest [`node-redis`][node-redis] client.
 
 [![npm](https://img.shields.io/npm/v/connect-redis-session?logo=npm)](https://www.npmjs.com/package/connect-redis-session)
+[![codecov](https://codecov.io/gh/rahil-p/connect-redis-session/branch/master/graph/badge.svg?token=LSOQ2ZCWIS)](https://codecov.io/gh/rahil-p/connect-redis-session)
 [![github-workflow](https://img.shields.io/github/workflow/status/rahil-p/connect-redis-session/npm%20publish?logo=github)](https://github.com/rahil-p/connect-redis-session/actions)
-
 
 ### Features:
 
 - Promise-based methods for direct interaction with the sessions store
-- Safeguards for handling race conditions caused by concurrent requests
+- Atomic single-key operations (`get`, `set`, `touch`, `destroy`)
 - Batched multi-key operations (`all`, `length`, `clear`) for efficient performance
-- Atomic `set` operations
+- Safeguards for handling race conditions caused by concurrent requests
 
 ### Compatibility:
 
-- Redis server: 2.6.0+
-- [`node-redis`][node-redis] 4.0.2+
-- [`express-session`][express-session]: 1.7.0+
+- Redis server 2.6.0+
+- [`node-redis`][node-redis] 4.0.0+
+- [`express-session`][express-session] 1.7.0+
 
 ___
 
@@ -25,91 +25,141 @@ ___
 ```shell
 npm install connect-redis-session
 ```
+
 ```shell
-yarn add connect-redis-session
+yarn add connect-redis-session 
 ```
 
 ## Usage
 
 ### Quick Start
 ```js
+const session = require('express-session');
 const redis = require('redis');
-const { RedisStore } = require('connect-redis-session')
+const { RedisStore } = require('connect-redis-session');
 
-const store = new RedisStore({
-    client: redis.createClient()
-});
-```
+// Create the Redis client
+const client = redis.createClient();
 
-### Express Session
+// Configure the Redis store
+const store = new RedisStore({ client });
 
-```js
+// Configure the Express session middleware
 app.use(
     session({
         store,
+        secret: 'swordfish',
         saveUninitialized: false, // recommended
         resave: false, // recommended
         // ...
-    })
-)
+    }),
+);
 ```
 
-Disabling the session's [`saveUninitialized`](https://github.com/expressjs/session#saveuninitialized) 
-option helps reduce traffic and memory usage for your Redis store.
+### Access with Promises
 
-Disabling the session's [`resave`](https://github.com/expressjs/session#resave)
-option helps prevent concurrent requests from overwriting sessions.
-
-### Direct Access
-
-The `access` field exposes commands for interacting with the store using Promises.
+The `RedisStore.access` field exposes methods for directly interacting with the store using Promises.
 
 ```js
-// Get a session from the store
-const session = await store.access.get(sessionId);
+const updateSession = async (sid) => {
+    // Get a session from the store
+    const session = await store.access.get(sid);
 
-// Create or update a session
-await store.access.set(sessionId, sessionData)
+    // Create or update a session
+    await store.access.set(sid, { ...session, foo: 'bar' })
 
-// Delete a session
-await store.access.destroy(sessionId);
-
-// Clear all session keys from the store
-await store.access.clear();
+    // Delete a session
+    await store.access.destroy(sid);
+	
+    // Get all sessions
+    const sessions = await session.access.all();
+	
+    // Count all sessions
+    const n = await session.access.length();
+	
+    // Clear all session keys from the store
+    await store.access.clear();
+}
 ```
 
 ## Options
 
-### client
+```js
+const store = new RedisStore({
+    client,
+    prefix: 'sessions:',
+    scanCount: 100,
+    ttlSeconds: 86400,
+    concurrencyGraceSeconds: 300,
+    serializer: JSON,
+    disableTouch: false,
+})
+```
 
-This module exclusively supports the [`node-redis`][node-redis] v4 client.
+### `client`
 
-### prefix
+An initialized [`node-redis`][node-redis] v4 client.
 
-**string** | default: `'sessions:'`
+Prior to server listening, the client's `connect` method should be called.
+
+<details>
+
+<summary>example</summary>
+
+```js
+(async () => {
+    await client.connect();
+    server.listen(80);
+})();
+```
+
+</details>
+
+### `prefix`
+
+**string** • `'sessions:'`
 
 A prefix used for each key in the session store.
 
-### scanCount
+### `scanCount`
 
-**number** | default: `100`
+**number** • `100`
 
 The maximum number of keys batched in Redis `SCAN` calls.  This also helps limit the memory load on subsequent calls 
 using the key batches (e.g. `MGET`, `DEL`).
 
-### ttl
+### `ttlSeconds`
 
-**number** | default: `86400` (1 day)
+**number | `false`** • `86400` _1 day_
 
-This field is only used when a session cookie is missing the 
-[`expires`](https://github.com/expressjs/session#cookieexpires) field.
+The fallback duration in
+seconds after which a created or updated session should be expired.
 
-It represents the fallback duration in seconds after which a created or updated session should be expired when the 
-cookie [`expires`](https://github.com/expressjs/session#cookieexpires) date is missing.
+This field is only used when a session is missing the 
+[`cookie.expires`](https://github.com/expressjs/session#cookieexpires) field. 
 
-### disableTouch
+When set to `0` or `false`, the store will reject sessions missing the 
+[`cookie.expires`](https://github.com/expressjs/session#cookieexpires) field.
 
-**boolean** | default: `false`
+### `concurrencyGraceSeconds`
+
+The duration in seconds after [tombstone](https://en.wikipedia.org/wiki/Tombstone_(data_store)) records are removed from 
+the store.
+
+**number**
+
+### `serializer`
+
+**Serializer** • [`JSON`][mdn-json]
+
+A custom serializer implementing an encoding `stringify: (value: SessionData) => string` and a decoding 
+`parse: (text: string) => SessionData` method for storing session data as Redis string values.
+
+Refer to the global [`JSON`][mdn-json] object for an example.
+
+### `disableTouch`
+
+**boolean** • `false`
 
 Disables renewing the session's time to live when the session's [`touch`](https://github.com/expressjs/session#sessiontouch) 
 method is used.
@@ -118,15 +168,9 @@ Setting this option to `true` is not recommended and should share the same value
 [`resave`](https://github.com/expressjs/session#saveuninitialized) 
 option.
 
-### concurrencyMerge
-
-**boolean** | default: `false`
-
-Determines whether session race conditions should be resolved by deep merging changes; by default, race conditions are
-handled by overriding with the latest session data saved.
-
 ## License
 [MIT License](https://github.com/rahil-p/connect-redis-session/blob/master/LICENSE)
 
 [node-redis]: https://github.com/redis/node-redis
 [express-session]: https://github.com/expressjs/session
+[mdn-json]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON
