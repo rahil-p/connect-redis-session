@@ -17,17 +17,17 @@ Redis session storage for Express and the latest [`node-redis`][node-redis] clie
 
 - Redis server 2.6.0+
 - [`node-redis`][node-redis] 4.0.0+
-- [`express-session`][express-session] 1.7.0+
+- [`express-session`][express-session] 1.17.0+
 
 ___
 
 ## Installation
 ```shell
-npm install connect-redis-session
+npm install connect-redis-session # redis@^4 express-session@^1.17
 ```
 
 ```shell
-yarn add connect-redis-session 
+yarn add connect-redis-session # redis@^4 express-session@^1.17 
 ```
 
 
