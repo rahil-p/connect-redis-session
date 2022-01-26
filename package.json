@@ -20,7 +20,7 @@
 		"build/lib/**/*.d.ts",
 		"build/lua/**/*.lua"
 	],
-	"main": "build/index.js",
+	"main": "build/lib/index.js",
 	"scripts": {
 		"build": "npm run-script build:lua && npm run-script build:ts",
 		"build:lua": "mkdir -p build/lua && find lua -type f -maxdepth 1 -name '*.lua' -exec bash -c \"luamin -f {} > build/{}\" \\;",
