@@ -168,8 +168,11 @@ ___
 
 object • [`JSON`][mdn-json]
 
-A custom serializer implementing an encoding `stringify: (value: SessionData) => string` and a decoding
-`parse: (text: string) => SessionData` method for storing session data as Redis string values.
+A custom serializer implementing the following encoding and decoding methods for storing session data as Redis string 
+values:
+
+- `stringify`: `(value: SessionData) => string`
+- `parse`: `(text: string) => SessionData`
 
 Refer to the global [`JSON`][mdn-json] object for an example.
 

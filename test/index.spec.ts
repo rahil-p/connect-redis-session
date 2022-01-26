@@ -90,7 +90,11 @@ describe('Unit Tests:', function () {
 			let dateNow: () => number;
 
 			before('create Redis store', function () {
-				store = new RedisStore({ client: redisClient });
+				const serializer = {
+					parse: JSON.parse,
+					stringify: JSON.stringify,
+				};
+				store = new RedisStore({ client: redisClient, serializer });
 			});
 
 			before('replace `Date.now()` with a mock function', function () {
@@ -369,7 +373,7 @@ describe('Unit Tests:', function () {
 					await redisClient.flushDb();
 				});
 
-				before('create Redis store', function () {
+				before('create Redis store adapter', function () {
 					access = new RedisStoreAdapter({ client: redisClient });
 				});
 
@@ -402,6 +406,9 @@ describe('Unit Tests:', function () {
 
 					const value = await redisClient.get(sid);
 					assert.strictEqual(value, null);
+
+					const count = await access.length();
+					assert.strictEqual(count, 0);
 				});
 
 				it('Should not renew on touch', async function () {
@@ -418,7 +425,7 @@ describe('Unit Tests:', function () {
 					await redisClient.flushDb();
 				});
 
-				before('create Redis store', function () {
+				before('create Redis store adapter', function () {
 					access = new RedisStoreAdapter({ client: redisClient });
 				});
 
