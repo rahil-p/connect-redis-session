@@ -6,12 +6,15 @@ Redis session storage for Express and the latest [`node-redis`][node-redis] clie
 [![codecov](https://codecov.io/gh/rahil-p/connect-redis-session/branch/main/graph/badge.svg?token=P0nIvyEnTS)](https://codecov.io/gh/rahil-p/connect-redis-session)
 [![github-workflow](https://img.shields.io/github/workflow/status/rahil-p/connect-redis-session/npm%20publish?logo=github)](https://github.com/rahil-p/connect-redis-session/actions)
 
+___
+
 ### Features:
 
 - Promise-based methods for direct interaction with the sessions store
 - Atomic single-key operations (`get`, `set`, `touch`, `destroy`)
 - Batched multi-key operations (`all`, `length`, `clear`) for efficient performance
 - Safeguards for handling race conditions caused by concurrent requests
+
 
 ### Compatibility:
 

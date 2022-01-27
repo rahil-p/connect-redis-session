@@ -4,7 +4,7 @@ import { promisify } from 'util';
 import { assert } from 'chai';
 import * as sinon from 'sinon';
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
-import { RedisStore, RedisStoreAdapter, RedisStoreOptions, SessionDataDict } from '../lib';
+import { RedisStore, RedisStoreAdapter, RedisStoreOptions, SessionDataDict, SessionComparison } from '../lib';
 
 const mockDate = {
 	time: 0,
@@ -411,6 +411,11 @@ describe('Unit Tests:', function () {
 					assert.strictEqual(count, 0);
 				});
 
+				it('Should not set', async function () {
+					const result = await access.set(sid, createFakeSession(session, mockDate.now() + 36e5));
+					assert.strictEqual(result, null);
+				});
+
 				it('Should not renew on touch', async function () {
 					const result = await access.touch(sid, 36e2);
 					assert.strictEqual(result, null);
@@ -421,16 +426,16 @@ describe('Unit Tests:', function () {
 				let access: RedisStoreAdapter;
 				let session: session.SessionData;
 
-				before('reset the database', async function () {
-					await redisClient.flushDb();
-				});
-
 				before('create Redis store adapter', function () {
 					access = new RedisStoreAdapter({ client: redisClient });
 				});
 
+				beforeEach('reset the database', async function () {
+					await redisClient.flushDb();
+				});
+
 				beforeEach('configure and set session object', async function () {
-					session = createFakeSession({ user: { id: 'abcd' } }, mockDate.now() + 36e5);
+					session = createFakeSession({ user: { id: 'abcd' } }, mockDate.now() + 36e5, mockDate.now());
 					await access.set(sid, session);
 				});
 
@@ -443,6 +448,24 @@ describe('Unit Tests:', function () {
 					const _access = new RedisStoreAdapter({ client: redisClient, ttlSeconds: 0 });
 					const result = await _access.touch(sid, createFakeSession({}));
 					assert.strictEqual(result, null);
+				});
+
+				it('Should compare the session (concurrent)', async function () {
+					const result = await access.compare(sid, createFakeSession(session, undefined, mockDate.now() + 1));
+					const expected: SessionComparison = {
+						existing: createFakeSession(session, undefined, mockDate.now()),
+						concurrent: true,
+					};
+					assert.deepEqual(result, expected);
+				});
+
+				it('Should compare the session (not concurrent)', async function () {
+					const result = await access.compare(sid, session);
+					const expected: SessionComparison = {
+						existing: createFakeSession(session, undefined, mockDate.now()),
+						concurrent: false,
+					};
+					assert.deepEqual(result, expected);
 				});
 			});
 		});

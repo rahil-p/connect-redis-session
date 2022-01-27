@@ -5,6 +5,12 @@ export * from './adapter';
 
 const noop = () => {};
 
+declare module 'express-session' {
+	interface SessionData {
+		lastModified?: number;
+	}
+}
+
 /**
  * A generic callback for integrating the {@link RedisStoreAdapter}'s Promise return types.
  */

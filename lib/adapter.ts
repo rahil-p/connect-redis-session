@@ -14,10 +14,20 @@ const loadLuaScript = (fileName: string) => {
 };
 
 /**
- * A serializer capable of encoding/decoding {@link session.SessionData} instances to/from strings.
+ * A serializer for encoding/decoding {@link session.SessionData} instances to/from strings.
  */
 export interface Serializer {
+	/**
+	 * Decode a string-encoded session (e.g. {@link JSON.parse}).
+	 *
+	 * @param text - the string-encoded session
+	 */
 	parse: (text: string) => session.SessionData;
+	/**
+	 * Encode a session into a string (e.g. {@link JSON.stringify}).
+	 *
+	 * @param value
+	 */
 	stringify: (value: session.SessionData) => string;
 }
 
@@ -44,6 +54,20 @@ export interface RedisStoreAdapterOptions {
  */
 export interface SessionDataDict {
 	[id: string]: session.SessionData;
+}
+
+/**
+ * A summary comparing session data to the session data currently stored.
+ */
+export interface SessionComparison {
+	/**
+	 * The existing session data pulled from the store.
+	 */
+	existing: session.SessionData | null;
+	/**
+	 * Indicates whether {@link SessionComparison.existing} was updated during a concurrent request.
+	 */
+	concurrent: boolean;
 }
 
 /**
@@ -100,7 +124,25 @@ export class RedisStoreAdapter {
 	}
 
 	/**
-	 * Generate batches of keys with `SCAN`.
+	 * Check whether the provided session is up-to-date with the existing session data in the store.
+	 * This method may be used to check for and reconcile changes made to the session during a concurrent request.
+	 *
+	 * @param sessionId
+	 * @param sessionData
+	 *
+	 * @return a comparison summary object.
+	 */
+	async compare(sessionId: string, sessionData: Partial<session.SessionData>) {
+		const existing = await this.get(sessionId);
+
+		return {
+			existing,
+			concurrent: !!existing && sessionData.lastModified !== existing.lastModified,
+		} as SessionComparison;
+	}
+
+	/**
+	 * Generate batches of keys with `SCAN` for multi-key operations or iteration.
 	 *
 	 * @param batch - whether to return the keys returned by each `SCAN` call in batches; this allows the consumer to
 	 * make other async calls using each batch while waiting for the next one to arrive.
@@ -148,7 +190,7 @@ export class RedisStoreAdapter {
 	}
 
 	/**
-	 * Set a session (create or update).
+	 * Upsert a session (create or update).
 	 *
 	 * @param sessionId
 	 * @param sessionData
