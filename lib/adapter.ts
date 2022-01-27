@@ -2,6 +2,7 @@ import * as session from 'express-session';
 import * as fs from 'fs';
 import * as path from 'path';
 import type { createClient } from 'redis';
+import { deepEqual } from './compare';
 
 type Client = ReturnType<typeof createClient>;
 
@@ -56,6 +57,8 @@ export interface SessionComparison {
 	existing: session.SessionData | null;
 	/* Indicates whether {@link SessionComparison.existing} was updated during a concurrent request. */
 	concurrent: boolean;
+	/* Indicates deep equality with {@link SessionComparison.existing} (excluding `lastModified` and `cookie`) */
+	consistent: boolean;
 }
 
 /**
@@ -126,6 +129,12 @@ export class RedisStoreAdapter {
 		return {
 			existing,
 			concurrent: !!existing && sessionData.lastModified !== existing.lastModified,
+			consistent:
+				!!existing &&
+				deepEqual(
+					{ ...sessionData, lastModified: 0, cookie: null },
+					{ ...existing, lastModified: 0, cookie: null },
+				),
 		} as SessionComparison;
 	}
 

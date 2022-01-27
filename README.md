@@ -75,13 +75,13 @@ const updateSession = async (sid) => {
 
     // Delete a session
     await store.access.destroy(sid);
-	
+
     // Get all sessions
     const sessions = await session.access.all();
-	
+
     // Count all sessions
     const n = await session.access.length();
-	
+
     // Clear all session keys from the store
     await store.access.clear();
 }

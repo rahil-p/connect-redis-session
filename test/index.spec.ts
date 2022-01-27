@@ -24,7 +24,7 @@ const createFakeSession = (data: object, expires?: number, lastModified?: number
 	} as unknown as session.SessionData);
 
 /* eslint-disable func-names */
-describe('Unit Tests:', function () {
+describe('connect-redis-session:', function () {
 	let container: StartedTestContainer;
 	let redisClient: ReturnType<typeof redis.createClient>;
 
@@ -455,6 +455,7 @@ describe('Unit Tests:', function () {
 					const expected: SessionComparison = {
 						existing: createFakeSession(session, undefined, mockDate.now()),
 						concurrent: true,
+						consistent: true,
 					};
 					assert.deepEqual(result, expected);
 				});
@@ -464,6 +465,7 @@ describe('Unit Tests:', function () {
 					const expected: SessionComparison = {
 						existing: createFakeSession(session, undefined, mockDate.now()),
 						concurrent: false,
+						consistent: true,
 					};
 					assert.deepEqual(result, expected);
 				});
