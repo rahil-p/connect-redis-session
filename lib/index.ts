@@ -30,9 +30,7 @@ export interface RedisStoreOptions extends RedisStoreAdapterOptions {
  * A Redis session store for Express.
  */
 export class RedisStore extends session.Store {
-	/**
-	 * A Promise-based adapter providing convenient access to the Redis session store.
-	 */
+	/* A Promise-based adapter providing convenient access to the Redis session store. */
 	readonly access: RedisStoreAdapter;
 	readonly disableTouch: boolean;
 

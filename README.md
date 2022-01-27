@@ -165,6 +165,9 @@ number | `300`
 The duration in seconds after [tombstone](https://en.wikipedia.org/wiki/Tombstone_(data_store)) records are removed from
 the store.
 
+Tombstone records are used to prevent a destroyed session from being updated or touched. This lock is retained for the 
+duration specified by this setting.
+
 ___
 
 ### `serializer`

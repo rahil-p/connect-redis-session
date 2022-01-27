@@ -17,17 +17,9 @@ const loadLuaScript = (fileName: string) => {
  * A serializer for encoding/decoding {@link session.SessionData} instances to/from strings.
  */
 export interface Serializer {
-	/**
-	 * Decode a string-encoded session (e.g. {@link JSON.parse}).
-	 *
-	 * @param text - the string-encoded session
-	 */
+	/* Decode a string-encoded session (e.g. {@link JSON.parse}). */
 	parse: (text: string) => session.SessionData;
-	/**
-	 * Encode a session into a string (e.g. {@link JSON.stringify}).
-	 *
-	 * @param value
-	 */
+	/* Encode a session into a string (e.g. {@link JSON.stringify}). */
 	stringify: (value: session.SessionData) => string;
 }
 
@@ -60,13 +52,9 @@ export interface SessionDataDict {
  * A summary comparing session data to the session data currently stored.
  */
 export interface SessionComparison {
-	/**
-	 * The existing session data pulled from the store.
-	 */
+	/* The existing session data pulled from the store. */
 	existing: session.SessionData | null;
-	/**
-	 * Indicates whether {@link SessionComparison.existing} was updated during a concurrent request.
-	 */
+	/* Indicates whether {@link SessionComparison.existing} was updated during a concurrent request. */
 	concurrent: boolean;
 }
 
