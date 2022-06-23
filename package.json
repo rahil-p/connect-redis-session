@@ -84,7 +84,10 @@
 		"cache": false,
 		"instrument": true,
 		"sourceMap": true,
-		"check-coverage": true
+		"check-coverage": true,
+		"include": [
+			"lib/**/*"
+		]
 	},
 	"eslintConfig": {
 		"env": {
