@@ -6,6 +6,8 @@ import * as sinon from 'sinon';
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
 import { RedisStore, RedisStoreAdapter, RedisStoreOptions, SessionDataDict, SessionComparison } from '../lib';
 
+const REDIS_PORT = 6379;
+
 const mockDate = {
 	time: 0,
 	now() {
@@ -29,12 +31,14 @@ describe('connect-redis-session:', function () {
 	let redisClient: ReturnType<typeof redis.createClient>;
 
 	before('create Redis container', async function () {
-		this.timeout(15000);
-		container = await new GenericContainer('redis').withExposedPorts(6379).start();
+		this.timeout(20000);
+		container = await new GenericContainer('redis').withExposedPorts(REDIS_PORT).start();
 	});
 
 	before('create Redis client', async function () {
-		redisClient = redis.createClient({ url: `redis://${container.getHost()}:${container.getMappedPort(6379)}` });
+		redisClient = redis.createClient({
+			url: `redis://${container.getHost()}:${container.getMappedPort(REDIS_PORT)}`,
+		});
 		await redisClient.connect();
 	});
 

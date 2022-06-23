@@ -1,6 +1,6 @@
 {
 	"name": "connect-redis-session",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "Redis session store for Express",
 	"license": "MIT",
 	"author": {
@@ -23,7 +23,7 @@
 	"main": "build/lib/index.js",
 	"scripts": {
 		"build": "npm run-script build:lua && npm run-script build:ts",
-		"build:lua": "mkdir -p build/lua && find lua -type f -maxdepth 1 -name '*.lua' -exec bash -c \"luamin -f {} > build/{}\" \\;",
+		"build:lua": "mkdir -p build/lua && find lua -maxdepth 1 -type f -name '*.lua' -exec bash -c 'luamin -f \"$1\" > \"build/$1\"' _ {} \\;",
 		"build:ts": "tsc --project .",
 		"lint": "eslint --fix .",
 		"test": "rm -rf build && npm run-script build && npm run-script test:report",

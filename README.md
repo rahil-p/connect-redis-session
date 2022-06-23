@@ -1,6 +1,6 @@
 # connect-redis-session
 
-Redis session storage for Express and the latest [`node-redis`][node-redis] client.
+Redis session storage for Express supporting the latest [`node-redis`][node-redis] client.
 
 [![npm](https://img.shields.io/npm/v/connect-redis-session?logo=npm)](https://www.npmjs.com/package/connect-redis-session)
 [![codecov](https://codecov.io/gh/rahil-p/connect-redis-session/branch/main/graph/badge.svg?token=P0nIvyEnTS)](https://codecov.io/gh/rahil-p/connect-redis-session)
@@ -14,6 +14,7 @@ ___
 - Atomic single-key operations (`get`, `set`, `touch`, `destroy`)
 - Batched multi-key operations (`all`, `length`, `clear`) for efficient performance
 - Safeguards for handling race conditions caused by concurrent requests
+- First class support for [Typescript](https://www.typescriptlang.org/)
 
 
 ### Compatibility:
