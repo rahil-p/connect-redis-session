@@ -1,6 +1,6 @@
 {
 	"name": "connect-redis-session",
-	"version": "1.0.2",
+	"version": "1.0.5",
 	"description": "Redis session store for Express",
 	"license": "MIT",
 	"author": {
