@@ -21,7 +21,7 @@ const mockDate = {
 const createFakeSession = (data: object, expires?: number, lastModified?: number) =>
 	({
 		...data,
-		...(expires !== undefined && { cookie: { expires } }),
+		...(expires !== undefined && { cookie: { expires: new Date(expires) } }),
 		...(lastModified !== undefined && { lastModified }),
 	} as unknown as session.SessionData);
 
