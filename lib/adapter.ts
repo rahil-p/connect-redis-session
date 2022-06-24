@@ -111,7 +111,10 @@ export class RedisStoreAdapter {
 	 * @return the duration in milliseconds after which the provided session should expire.
 	 */
 	checkTtlMilliseconds(sessionData: session.SessionData) {
-		return sessionData?.cookie?.expires ?? (this.ttlSeconds || 0) * 1000;
+		if (sessionData?.cookie?.expires) {
+			return sessionData.cookie.expires.getTime() - new Date().getTime();
+		}
+		return (this.ttlSeconds || 0) * 1000;
 	}
 
 	/**
