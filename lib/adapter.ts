@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import type { createClient } from 'redis';
 import { deepEqual } from './compare';
+import serializer, { Serializer } from './serializer';
 
 type Client = ReturnType<typeof createClient>;
 
@@ -13,16 +14,6 @@ const loadLuaScript = (fileName: string) => {
 	const file = fs.readFileSync(filePath, 'utf8');
 	return file.trim();
 };
-
-/**
- * A serializer for encoding/decoding {@link session.SessionData} instances to/from strings.
- */
-export interface Serializer {
-	/* Decode a string-encoded session (e.g. {@link JSON.parse}). */
-	parse: (text: string) => session.SessionData;
-	/* Encode a session into a string (e.g. {@link JSON.stringify}). */
-	stringify: (value: session.SessionData) => string;
-}
 
 /**
  * Configuration options for {@link RedisStoreAdapter}.
@@ -83,7 +74,7 @@ export class RedisStoreAdapter {
 		this.scanCount = options.scanCount ?? 100;
 		this.ttlSeconds = options.ttlSeconds ?? 86400;
 		this.concurrencyGraceSeconds = options.concurrencyGraceSeconds ?? 300;
-		this.serializer = options.serializer ?? JSON;
+		this.serializer = options.serializer ?? serializer;
 		this._scripts = {
 			set: loadLuaScript('set'),
 			touch: loadLuaScript('touch'),
@@ -112,7 +103,7 @@ export class RedisStoreAdapter {
 	 */
 	checkTtlMilliseconds(sessionData: session.SessionData) {
 		if (sessionData?.cookie?.expires !== undefined) {
-			return sessionData.cookie.expires.getTime() - new Date().getTime();
+			return sessionData.cookie.expires.getTime() - Date.now();
 		}
 		return (this.ttlSeconds || 0) * 1000;
 	}
@@ -126,19 +117,19 @@ export class RedisStoreAdapter {
 	 *
 	 * @return a comparison summary object.
 	 */
-	async compare(sessionId: string, sessionData: Partial<session.SessionData>) {
+	async compare(sessionId: string, sessionData: Partial<session.SessionData>): Promise<SessionComparison> {
 		const existing = await this.get(sessionId);
 
 		return {
 			existing,
-			concurrent: !!existing && sessionData.lastModified !== existing.lastModified,
+			concurrent: !!existing && sessionData.lastModified?.getTime() !== existing.lastModified?.getTime(),
 			consistent:
 				!!existing &&
 				deepEqual(
-					{ ...sessionData, lastModified: 0, cookie: null },
-					{ ...existing, lastModified: 0, cookie: null },
+					{ ...sessionData, lastModified: null, cookie: null },
+					{ ...existing, lastModified: null, cookie: null },
 				),
-		} as SessionComparison;
+		};
 	}
 
 	/**
@@ -206,7 +197,7 @@ export class RedisStoreAdapter {
 
 		const _sessionData = {
 			...sessionData,
-			lastModified: Date.now(),
+			lastModified: new Date(Date.now()), // verbose syntax, but simplifies testing
 		};
 
 		const key = this.key(sessionId);

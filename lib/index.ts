@@ -7,7 +7,7 @@ const noop = () => {};
 
 declare module 'express-session' {
 	interface SessionData {
-		lastModified?: number;
+		lastModified?: Date;
 	}
 }
 

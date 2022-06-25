@@ -5,6 +5,7 @@ import { assert } from 'chai';
 import * as sinon from 'sinon';
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
 import { RedisStore, RedisStoreAdapter, RedisStoreOptions, SessionDataDict, SessionComparison } from '../lib';
+import serializer from '../lib/serializer';
 
 const REDIS_PORT = 6379;
 
@@ -18,12 +19,16 @@ const mockDate = {
 	},
 };
 
-const createFakeSession = (data: object, expires?: number, lastModified?: number) =>
-	({
+const createFakeSession = (data: object, expires?: number, lastModified?: number) => {
+	return {
 		...data,
-		...(expires !== undefined && { cookie: { expires: new Date(expires) } }),
-		...(lastModified !== undefined && { lastModified }),
-	} as unknown as session.SessionData);
+		cookie: {
+			originalMaxAge: 0,
+			expires: expires === undefined ? undefined : new Date(expires),
+		},
+		lastModified: lastModified === undefined ? undefined : new Date(lastModified),
+	} as unknown as session.SessionData;
+};
 
 /* eslint-disable func-names */
 describe('connect-redis-session:', function () {
@@ -94,10 +99,6 @@ describe('connect-redis-session:', function () {
 			let dateNow: () => number;
 
 			before('create Redis store', function () {
-				const serializer = {
-					parse: JSON.parse,
-					stringify: JSON.stringify,
-				};
 				store = new RedisStore({ client: redisClient, serializer });
 			});
 
@@ -455,9 +456,22 @@ describe('connect-redis-session:', function () {
 				});
 
 				it('Should compare the session (concurrent)', async function () {
-					const result = await access.compare(sid, createFakeSession(session, undefined, mockDate.now() + 1));
+					const result = await access.compare(sid, {
+						...session,
+						lastModified: new Date(mockDate.now() + 1),
+					});
 					const expected: SessionComparison = {
-						existing: createFakeSession(session, undefined, mockDate.now()),
+						existing: { ...session, lastModified: new Date(mockDate.now()) },
+						concurrent: true,
+						consistent: true,
+					};
+					assert.deepEqual(result, expected);
+				});
+
+				it('Should compare the session (concurrent, undefined `lastModified`)', async function () {
+					const result = await access.compare(sid, { ...session, lastModified: undefined });
+					const expected: SessionComparison = {
+						existing: { ...session, lastModified: new Date(mockDate.now()) },
 						concurrent: true,
 						consistent: true,
 					};
@@ -467,7 +481,18 @@ describe('connect-redis-session:', function () {
 				it('Should compare the session (not concurrent)', async function () {
 					const result = await access.compare(sid, session);
 					const expected: SessionComparison = {
-						existing: createFakeSession(session, undefined, mockDate.now()),
+						existing: { ...session, lastModified: new Date(mockDate.now()) },
+						concurrent: false,
+						consistent: true,
+					};
+					assert.deepEqual(result, expected);
+				});
+
+				it('Should compare the session (not concurrent, undefined `lastModified`)', async function () {
+					await access.set(sid, { ...session, lastModified: undefined });
+					const result = await access.compare(sid, { ...session, lastModified: new Date(mockDate.now()) });
+					const expected: SessionComparison = {
+						existing: { ...session, lastModified: new Date(mockDate.now()) },
 						concurrent: false,
 						consistent: true,
 					};

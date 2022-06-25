@@ -97,7 +97,6 @@ const store = new RedisStore({
     scanCount: 100,
     ttlSeconds: 86400,
     concurrencyGraceSeconds: 300,
-    serializer: JSON,
     disableTouch: false,
 })
 ```
@@ -161,27 +160,13 @@ ___
 
 ### `concurrencyGraceSeconds`
 
-number | `300`
+number • `300`
 
 The duration in seconds after [tombstone](https://en.wikipedia.org/wiki/Tombstone_(data_store)) records are removed from
 the store.
 
 Tombstone records are used to prevent a destroyed session from being updated or touched. This lock is retained for the 
 duration specified by this setting.
-
-___
-
-### `serializer`
-
-object • [`JSON`][mdn-json]
-
-A custom serializer implementing the following encoding and decoding methods for storing session data as Redis string 
-values:
-
-- `stringify`: `(value: SessionData) => string`
-- `parse`: `(text: string) => SessionData`
-
-Refer to the global [`JSON`][mdn-json] object for an example.
 
 ___
 
@@ -195,6 +180,20 @@ method is used.
 Setting this option to `true` is not recommended and should share the same value as the session's
 [`resave`](https://github.com/expressjs/session#saveuninitialized)
 option.
+
+___
+
+### `serializer`
+
+object
+
+A custom serializer implementing the following encoding and decoding methods for storing session data as Redis string
+values:
+
+- `stringify`: `(value: SessionData) => string`
+- `parse`: `(text: string) => SessionData`
+
+Refer to the global [`JSON`][mdn-json] object for an example.
 
 ___
 
