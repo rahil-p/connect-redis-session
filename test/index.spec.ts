@@ -489,10 +489,12 @@ describe('connect-redis-session:', function () {
 				});
 
 				it('Should compare the session (not concurrent, undefined `lastModified`)', async function () {
-					await access.set(sid, { ...session, lastModified: undefined });
-					const result = await access.compare(sid, { ...session, lastModified: new Date(mockDate.now()) });
+					const data = { a: 1 } as unknown as session.SessionData;
+					const sessionData = createFakeSession(data);
+					await redisClient.set(`sessions:${sid}`, serializer.stringify(sessionData));
+					const result = await access.compare(sid, data);
 					const expected: SessionComparison = {
-						existing: { ...session, lastModified: new Date(mockDate.now()) },
+						existing: sessionData,
 						concurrent: false,
 						consistent: true,
 					};
