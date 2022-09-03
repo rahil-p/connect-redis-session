@@ -23,7 +23,7 @@
 	"main": "build/lib/index.js",
 	"scripts": {
 		"build": "npm run-script build:lua && npm run-script build:ts",
-		"build:lua": "node .build.js",
+		"build:lua": "find lua -type f -name '*.lua' -exec sh -c 'mkdir -p \"build/${0%/*}\" && cat $0 | luamin -c > build/$0' {} \\;",
 		"build:ts": "tsc --project .",
 		"lint": "eslint --fix .",
 		"test": "rm -rf build && npm run-script build && npm run-script test:report",
