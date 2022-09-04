@@ -20,7 +20,7 @@ const loadLuaScript = (fileName: string) => {
  */
 export interface RedisStoreAdapterOptions {
 	/* A V4 redis client. */
-	client: Client;
+	client: Client | Client['v4'];
 	/* Prefix for stored session keys. */
 	prefix?: string;
 	/* The maximum number of keys to batch in Redis calls. */
@@ -69,7 +69,7 @@ export class RedisStoreAdapter {
 			throw new Error('Missing mandatory `client` option for `RedisStore`');
 		}
 
-		this.client = options.client;
+		this.client = options.client as Client;
 		this.prefix = options.prefix ?? 'sessions:';
 		this.scanCount = options.scanCount ?? 100;
 		this.ttlSeconds = options.ttlSeconds ?? 86400;
